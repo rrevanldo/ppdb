@@ -10,7 +10,7 @@
     <div class="title">
         <h1 class="text-center">Profile Info</h1>
     </div>
-    <div class="card body" style="margin-left: 50px;">
+    <div class="card body" style="margin-left: 50px;"><br>
         @if(is_null(Auth::user()->image_profile))
           <img src ="{{asset('assets/img/pp.png')}}" alt=""
           width = "100" style="border-radius:50%; align: center;" class="d-block m-auto">

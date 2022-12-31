@@ -18,9 +18,6 @@ use App\Http\Controllers\PpdbController;
 //     return view('welcome');
 // });
 
-// Route::get('/dashboard', [PpdbController::class, 'dashboard'])->name('dashboard');
-// Route::get('/print', [PpdbController::class, 'print'])->name('print');
-
 //halaman awal
 Route::get('/', [PpdbController::class, 'index'])->name('index');
 
@@ -33,7 +30,7 @@ Route::get('/register', [PpdbController::class, 'register'])->name('register');
 Route::post('/store', [PpdbController::class, 'store'])->name('store');
 
 // print pdf
-Route::get('/print/{id}', [PpdbController::class, 'print'])->name('print');
+Route::get('/print', [PpdbController::class, 'print'])->name('print');
 
 // logout
 Route::get('/logout', [PpdbController::class, 'logout'])->name('logout');
@@ -43,22 +40,25 @@ Route::middleware('isLogin', 'CekRole:admin')->group(function() {
     Route::get('/dashboard', [PpdbController::class, 'dashboard'])->name('dashboard');
     Route::get('/dashboard/users', [PpdbController::class, 'users'])->name('dashboard.users');
     Route::get('/dashboard/pembayaran', [PpdbController::class, 'pembayaran'])->name('dashboard.pembayaran');
-    Route::get('/dashboard/complated', [PpdbController::class, 'complated'])->name('complated');
-    Route::patch('/dashboard/complated/{id}', [PpdbController::class, 'updateComplated'])->name('update-complated');
+    Route::get('/dashboard/pembayaran/lihat/{pembayaran:user_id}', [PpdbController::class, 'lihat'])->name('dashboard.pembayaran.lihat');
+    Route::get('/dashboard/pembayaran/detail/{pembayaran:user_id}', [PpdbController::class, 'detail'])->name('dashboard.pembayaran.detail');
+    Route::patch('/dashboard/pembayaran/validasi/{pembayaran:user_id}', [PpdbController::class, 'validasi'])->name('dashboard.pembayaran.validasi');
+    Route::patch('/dashboard/pembayaran/tolak/{pembayaran:user_id}', [PpdbController::class, 'tolak'])->name('dashboard.pembayaran.tolak');
 });
 
 //halaman setelah login user
 Route::middleware('isLogin', 'CekRole:user')->prefix('/dashboard')->name('dashboard.')->group(function () {
     Route::get('/dashboard', [PpdbController::class, 'dashboard'])->name('dashboard');
-    Route::get('/dashboard/pembayaran', [PpdbController::class, 'pembayaran'])->name('dashboard.pembayaran');
-    Route::patch('/dashboard/pembayaran/change', [PpdbController::class, 'uploadPembayaran'])->name('dashboard.pembayaran.change');
+    Route::get('/dashboard/pembayaran', [PpdbController::class, 'pembayaran'])->name('pembayaran');
+    Route::post('/dashboard/pembayaran/upload', [PpdbController::class, 'uploadPembayaran'])->name('pembayaran.upload');
+    Route::patch('pembayaran/pembayaran/update', [PembayaranController::class, 'update'])->name('pembayaran.update');
 });
 
 // halaman setelah login user dan admin
 Route::middleware(['isLogin', 'CekRole:admin,user'])->group(function() {
+    Route::get('/error', [PpdbController::class, 'error'])->name('error');
     Route::get('/dashboard', [PpdbController::class, 'dashboard'])->name('dashboard');
     Route::get('/dashboard/profile', [PpdbController::class, 'profile'])->name('dashboard.profile');
-    Route::get('/error', [PpdbController::class, 'error'])->name('error');
     Route::get('/dashboard/profile/upload', [PpdbController::class, 'profileUpload'])->name('dashboard.profile.upload');
     Route::patch('/dashboard/profile/change', [PpdbController::class, 'changeProfile'])->name('dashboard.profile.change');
     Route::get('/dashboard/pembayaran', [PpdbController::class, 'pembayaran'])->name('dashboard.pembayaran');

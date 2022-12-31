@@ -8,6 +8,25 @@
       }
 </style>
 
+@if (Session::get('fail'))
+<div class="alert alert-danger">
+    {{ Session::get('fail') }}
+</div>
+@endif
+@if (Session::get('notAllowed'))
+<div class="alert alert-danger">
+    {{ Session::get('notAllowed') }}
+</div>
+@endif
+@if ($errors->any())
+<div class="alert alert-danger">
+   <ul>
+       @foreach ($errors->all() as $error)
+           <li>{{ $error }}</li>
+       @endforeach
+   </ul>
+</div>
+@endif
 @if ($message = Session::get('success'))
         <div class="alert alert-success alert-dismissible fade show" role="alert">
             {{ $message }}

@@ -44,9 +44,15 @@
                 <li class="nav-item">
                     <a class="nav-link" href="#hubungikami">Hubungi Kami</a>
                 </li>
+                @if (Auth::check())
+                <li class="nav-item">
+                    <a href="/dashboard" class="nav-link">{{Auth::user()->nama}}</a>
+                </li>
+                @else
                 <li class="nav-item">
                     <a class="nav-link" href="/login">Login</a>
                 </li>
+                @endif
             </ul>
         </div>
     </nav>
@@ -59,7 +65,7 @@
     <hr>
 
     <!-- Site footer -->
-    <footer class="site-footer">
+    <footer class="site-footer" id="hubungikami">
         <div class="container">
           <div class="row">
             <div class="col-sm-12 col-md-6">
@@ -100,7 +106,7 @@
               <small class="text-secondary">Copyright &copy; <script>
                     document.write(new Date().getFullYear())
 
-                </script> SMK Wikrama</small class="text-secondary">
+                </script> BY Revan Rionaldo</small class="text-secondary">  
             </div>
   
             <div class="col-md-4 col-sm-6 col-xs-12">

@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::create('ppdbs', function (Blueprint $table) {
-            $table->bigIncrements('id');
+            $table->id();
             $table->string('nisn');
             $table->string('jk');
             $table->string('nama');
@@ -24,18 +24,6 @@ return new class extends Migration
             $table->string('no_hp');
             $table->string('no_hp_ayah');
             $table->string('no_hp_ibu');
-            $table->string('pilih_referensi');
-            $table->string('nama_pegawai_wikrama')->nullable();
-            $table->string('nama_siswa')->nullable();
-            $table->string('rayon')->nullable();
-            $table->string('nama_alumni')->nullable();
-            $table->string('tahun_lulus_alumni')->nullable();
-            $table->string('nama_guru_smp')->nullable();
-            $table->string('nama_smp')->nullable();
-            $table->string('referensi_no_seleksi')->nullable();
-            $table->string('referensi_nama_siswa')->nullable();
-            $table->string('referensi_sosmed');
-            $table->string('referensi_langsung');
             $table->timestamps();
         });
     }

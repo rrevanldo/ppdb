@@ -113,6 +113,12 @@
         <p class="text-secondary">Selamat Datang</p>
     </div>
 
+    {{-- @elseif($item->status == 1)
+            <div class="alert alert-primary">Pembayaran sudah verifikasi, silahkan untuk melanjutkan proses selanjutnya</div>
+    @elseif($item->status == 0)
+            <div class="alert alert-warning">Pembayaran sedang diverifikasi, harap tunggu informasi selanjutnya</div>
+    @endif --}}
+
 @endif
 
 {{-- admin penutup --}}

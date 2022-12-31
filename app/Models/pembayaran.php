@@ -14,5 +14,12 @@ class pembayaran extends Model
         'nominal', 
         'nama_bank_text',
         'foto_pembayaran',
+        'status',
+        'done_time',
+        'user_id',
     ];
+
+    public function user(){
+        return $this->belongsTo(User::class,  'user_id');
+    }
 }

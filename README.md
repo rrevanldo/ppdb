@@ -7,6 +7,34 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
+   <?php $i++; ?>
+
+   <td>              
+                {{-- @if ($item->status == 'MENUNGGU') --}}
+                                <form method="post" class="d-inline-block" action="{{ route('peserta-diterima', $item->id) }}">
+                                    @method('PATCH')
+                                    @csrf
+                                    <button type="submit" class="btn btn-success mr-2">
+                                        TERIMA
+                                    </button>
+                                </form>
+                                <form method="post" class="d-inline-block" action="{{ route('peserta-ditolak', $item->id) }}">
+                                    @method('PATCH')
+                                    @csrf
+                                    <button type="submit" class="btn btn-danger mr-2">
+                                        TOLAK
+                                    </button>
+                                </form>                                
+                            {{-- @else --}}
+                                <button class="btn btn-success mr-2" disabled>
+                                    TERIMA
+                                </button>
+                                <button class="btn btn-danger mr-2" disabled>
+                                    TOLAK
+                                </button>
+                            {{-- @endif --}}
+                        </td>
+
 ## About Laravel
 
 Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:

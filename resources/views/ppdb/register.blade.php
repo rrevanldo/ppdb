@@ -14,6 +14,11 @@
             <div class="card mt-2 mx-auto p-4 bg-light">
                 <div class="card-body bg-light">
                     <div class="container">
+                        @if (Session::get('success'))
+                        <div class="alert alert-success w-75">
+                            {{ Session::get('success') }}
+                        </div>
+                        @endif
                         @if ($errors->any())
                         <div class="alert alert-danger">
                             <ul>
@@ -24,6 +29,7 @@
                         </div><br />
                         @endif
                         {{-- {{ route('print',$ppdb->nodaftar) }} --}}
+                        {{-- {{ route('store') }} --}}
                         <form method="POST" action="{{ route('store') }}">
                             @csrf
                             
@@ -111,149 +117,14 @@
                                                 placeholder="Contoh : 08--------" required>
                                         </div>
                                     </div>
-                                    <div class="col-md-12">
-                                            <label>Pilih Referensi</label>
-                                            <select name="pilih_referensi" class="form-control" id="pilih_referensi"
-                                                onclick="tampil_referensi()" required>
-                                                <option name="pilih_referensi" disabled hidden selected>Pilih Referensi</option>
-                                                <option name="pilih_referensi" value="pegawai">Guru/Staf/Laboran/Pegawai Wikrama</option>
-                                                <option name="pilih_referensi" value="siswa">Siswa SMK Wikrama</option>
-                                                <option name="pilih_referensi" value="alumni">Alumni SMK Wikrama</option>
-                                                <option name="pilih_referensi" value="guru_smp">Guru SMP</option>
-                                                <option name="pilih_referensi" value="calon_siswa">Calon Siswa SMK Wikrama</option>
-                                                <option name="pilih_referensi" value="sosial_media">Sosial Media</option>
-                                                <option name="pilih_referensi" value="referensi_langsung">Referensi Langsung</option>
-                                            </select>
-                                    </div><br>
-                                    <div class="row" id="referensi_pegawai" style="display:none;">
-                                        <div class="col-sm-12"><br>
-                                            <label><b>Referensi dari Guru/Staf/Laboran/Pegawai Wikrama</b></label>
-                                            <br>
-                                        </div>
-                                        <div class="col-sm-12 mt-2"><br>
-                                            <label>Nama Guru/Staf/Laboran/Pegawai Wikrama</label>
-                                            <input type="text" class="form-control" name="nama_pegawai_wikrama"
-                                                id="nama_pegawai_wikrama">
-                                        </div>
-                                    </div>
-                                    <div class="row align-items-start" id="referensi_siswa" style="display:none;">
-                                        <div class="col-sm-12"><br>
-                                            <label><b>Referensi dari Siswa Wikrama</b></label>
-                                            <br>
-                                        </div>
-                                        <div class="col-sm-12">
-                                            <label>Nama Siswa</label>
-                                            <input type="text" class="form-control" name="nama_siswa" id="nama_siswa">
-                                        </div>
-                                        <div class="col-sm-12 mt-2">
-                                            <label>Rayon</label>
-                                            <select name="rayon" id="rayon" class="form-control">
-                                                <option name="rayon" value="">Pilih Rayon</option>
-                                                <option name="rayon" value="Cia 1">Ciawi 1</option>
-                                                <option name="rayon" value="Cia 2">Ciawi 2</option>
-                                                <option name="rayon" value="Cia 3">Ciawi 3</option>
-                                                <option name="rayon" value="Cia 4">Ciawi 4</option>
-                                                <option name="rayon" value="Cia 5">Ciawi 5</option>
-                                                <option name="rayon" value="Cib 1">Cibedug 1</option>
-                                                <option name="rayon" value="Cib 2">Cibedug 2</option>
-                                                <option name="rayon" value="Cib 3">Cibedug 3</option>
-                                                <option name="rayon" value="Cic 1">Cicurug 1</option>
-                                                <option name="rayon" value="Cic 2">Cicurug 2</option>
-                                                <option name="rayon" value="Cic 3">Cicurug 3</option>
-                                                <option name="rayon" value="Cic 4">Cicurug 4</option>
-                                                <option name="rayon" value="Cic 5">Cicurug 5</option>
-                                                <option name="rayon" value="Cic 6">Cicurug 6</option>
-                                                <option name="rayon" value="Cic 7">Cicurug 7</option>
-                                                <option name="rayon" value="Cis 1">Cisarua 1</option>
-                                                <option name="rayon" value="Cis 2">Cisarua 2</option>
-                                                <option name="rayon" value="Cis 3">Cisarua 3</option>
-                                                <option name="rayon" value="Cis 4">Cisarua 4</option>
-                                                <option name="rayon" value="Cis 5">Cisarua 5</option>
-                                                <option name="rayon" value="Cis 6">Cisarua 6</option>
-                                                <option name="rayon" value="Suk 1">Sukasari 1</option>
-                                                <option name="rayon" value="Suk 2">Sukasari 2</option>
-                                                <option name="rayon" value="Taj 1">Tajur 1</option>
-                                                <option name="rayon" value="Taj 2">Tajur 2</option>
-                                                <option name="rayon" value="Taj 3">Tajur 3</option>
-                                                <option name="rayon" value="Taj 4">Tajur 4</option>
-                                                <option name="rayon" value="Taj 5">Tajur 5</option>
-                                                <option name="rayon" value="Wik 1">Wikrama 1</option>
-                                                <option name="rayon" value="Wik 2">Wikrama 2</option>
-                                                <option name="rayon" value="Wik 3">Wikrama 3</option>
-                                                <option name="rayon" value="Wik 4">Wikrama 4</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="row align-items-start" id="referensi_alumni" style="display:none;">
-                                        <div class="col-sm-12"><br>
-                                            <label><b>Referensi dari Alumni Wikrama</b></label>
-                                            <br>
-                                        </div>
-                                        <div class="col-sm-12">
-                                            <label>Nama Alumni</label>
-                                            <input type="text" class="form-control" name="nama_alumni" id="nama_alumni">
-                                        </div>
-                                        <div class="col-sm-12 mt-2">
-                                            <label>Tahun Lulus Alumni</label>
-                                            <input type="number" class="form-control" name="tahun_lulus_alumni" id="tahun_lulus_alumni">
-                                        </div>
-                                    </div>
-                                    <div class="row align-items-start" id="referensi_guru_smp" style="display:none;">
-                                        <div class="col-sm-12"><br>
-                                            <label><b>Referensi dari Guru SMP</b></label>
-                                            <br>
-                                        </div>
-                                        <div class="col-sm-12">
-                                            <label>Nama Guru</label>
-                                            <input type="text" class="form-control" name="nama_guru_smp" id="nama_guru_smp">
-                                        </div>
-                                        <div class="col-sm-12 mt-2">
-                                            <label>Asal SMP</label>
-                                            <input type="text" class="form-control" name="nama_smp" id="nama_smp" >
-                                        </div>
-                                    </div>
-                                    <div class="row align-items-start" id="referensi_calon_siswa" style="display:none;">
-                                        <div class="col-sm-12"><br>
-                                            <label><b>Referensi dari Calon Peserta Didik</b></label>
-                                            <br>
-                                        </div>
-                                        <div class="col-sm-12">
-                                            <label>No Seleksi</label>
-                                            <input type="number" class="form-control" name="referensi_no_seleksi"
-                                                id="referensi_no_seleksi" >
-                                        </div>
-                                        <div class="col-sm-12 mt-2">
-                                            <label>Nama Calon Peserta</label>
-                                            <input type="text" class="form-control" name="referensi_nama_siswa"
-                                                id="referensi_nama_siswa" >
-                                        </div>
-                                    </div>
-                                    <div class="row align-items-start" id="referensi_sosmed" style="display:none;">
-                                        <div class="col-sm-12">
-                                            <!-- <label><b>Referensi Sosial Media</b></label>
-                                            <br> -->
-                                        </div>
-                                        <div class="col-sm-12">
-                                            <input type="hidden" name="referensi_sosmed" id="referensi_sosmed" class="form-control"
-                                                value="sosial_media">
-                                        </div>
-                                    </div>
-                                    <div class="row align-items-start" id="referensi_langsung" style="display:none;">
-                                        <div class="col-sm-12">
-                                            <!-- <label><b>Referensi Langsung</b></label> -->
-                                            <br>
-                                        </div>
-                                        <div class="col-sm-12">
-                                            <input type="hidden" name="referensi_langsung" id="referensi_langsung" class="form-control"
-                                                value="daftar_langsung">
-                                        </div>
-                                    </div>
                                         <div class="col-md-12">
                                             <div class="form-group"><br>
-                                            <button type="submit" id="contactus-submit" class="btn-success btn-lg btn">Submit</button>
+                                            <button type="submit" id="contactus-submit" class="btn-success btn-lg btn">Submit</button> &nbsp; &nbsp; &nbsp;
+                                            <span>Sudah Punya akun? Klik <a class="logres" href="/login" style="text-decoration: underline;">Login</a></span> &nbsp; &nbsp; &nbsp;
                                             <a href="/" class="btn-dark btn-lg btn">Cancel</a>
                                             </div>
-                                        </div>
+                                        </div><br><br>
+                                        {{-- <span>Sudah Punya akun? Klik <a class="logres" href="/login" style="text-decoration: underline;">Login</a></span> --}}
                                     </div>
                                 </div>
                         </form>

@@ -19,49 +19,6 @@ class PpdbController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-    // if ($request->hasfile('foto_pembayaran')) {            
-        //     $foto_pembayaran = round(microtime(true) * 1000).'-'.str_replace(' ','-',$request->file('foto_pembayaran')->getClientOriginalName());
-        //     $request->file('foto_pembayaran')->move(public_path('images'), $foto_pembayaran);
-        //      Uploads::create(
-        //             [                        
-        //                 'data_file' =>$foto_pembayaran
-        //             ]
-        //         );
-        //     echo'Success';
-        // }else{
-        //     $uploaded = $image->getClientOriginalName();
-        // }
-
-     public function uploadPembayaran(Request $request)
-    {
-        $request->validate([
-            'nama_bank' => 'required',
-            'nama_pemilik' => 'required',
-            'nominal' => 'required',
-            'foto_pembayaran' => 'required|image|mimes:jpg,png,jpeg,gif,svg',
-            'nama_bank_text' => 'nullable',
-        ]);
-
-        pembayaran::create([
-            'nama_bank' => $request->nama_bank,
-            'nama_pemilik' => $request->nama_pemilik,
-            'nominal' => $request->nominal,
-            'nama_bank_text' => $request->nama_bank_text,
-            'foto_pembayaran' => $request->foto_pembayaran,
-        ]);
-
-        $image = $request->file('foto_pembayaran');
-         $imgName = time().rand().'.'.$image->extension();
-         if(!file_exists(public_path('/assets/img/'.$image->getClientOriginalName()))){
-             $destinationPath = public_path('/assets/img/');
-             $image->move($destinationPath, $imgName);
-             $uploaded = $imgName;
-         }else{
-             $uploaded = $image->getClientOriginalName();
-         }
-
-        return redirect()->route('dashboard')->with('successUploadBayar', 'Pembayaran telah dilakukan silahkan menunggu admin untuk melakukan validasi');
-    }
 
      public function changeProfile (Request $request)
      {
@@ -123,11 +80,41 @@ class PpdbController extends Controller
          return view('ppdb.register');
      }
 
-     public function pembayaran()
-     {
-         return view('ppdb.pembayaran');
+     public function lihat($user_id)
+     { 
+        $detailUser = User::findOrFail($user_id);
+        $pem = Pembayaran::where('user_id', $user_id)->first();
+        return view('ppdb.lihat' , compact('pem', 'detailUser'));
      }
 
+     public function detail($user_id)
+     {
+        $detailUser = User::findOrFail($user_id);
+        return view('ppdb.detail', compact('detailUser'));
+     }
+
+     public function pembayaran()
+     {
+        // $users=User::all();
+        $users = Pembayaran::with('user')->paginate(5);
+        $item = Pembayaran::where('user_id', '=', Auth::user()->id)->first();
+         return view('ppdb.pembayaran' , compact('item' , 'users'));
+     }
+
+     public function validasi($user_id){
+   
+        Pembayaran::where('user_id', '=', $user_id)->update([
+            'status' => 1,
+        ]);
+        return redirect()->back()->with('done', 'Berhasil Validasi');
+    }
+
+    public function tolak($user_id){
+        Pembayaran::where('user_id', '=', $user_id)->update([
+            'status' => 2,
+        ]);
+        return redirect()->back()->with('done', 'Permintaan Di tolak');
+    }
 
      public function login()
      {
@@ -147,7 +134,7 @@ class PpdbController extends Controller
         if (Auth::attempt($user)) {
             return redirect()->route('dashboard');
         } else {
-            return redirect('/')->with('fail', "Gagal login, periksa dan coba lagi!");
+            return redirect('/login')->with('fail', "Gagal login, periksa dan coba lagi!");
         }
     }
 
@@ -157,27 +144,10 @@ class PpdbController extends Controller
         return redirect('/');
     }
 
-    public function print($id)
-    {
-        $ppdb = Ppdb::where('id', $id)->first();
-        
-        view()->share('ppdb',$ppdb);
-
-        $send = [
-            'ppdb' => $ppdb,
-        ];
-
-        $pdf = PDF::loadView('print', compact('ppdb'));
-
-        return $pdf->download('form_pendaftaran.pdf');
-
-        // return view('ppdb.print');
-    }
-
     public function index()
     {
-        //
-        return view('ppdb.index');
+        $users=User::all();
+        return view('ppdb.index' , compact('users'));
     }
 
     /**
@@ -207,47 +177,11 @@ class PpdbController extends Controller
             'asal_sekolah_text' => 'nullable',
             'email' => 'required',
             'no_hp' => 'required',
-            'no_hp_ayah' => 'required|',
-            'no_hp_ibu' => 'required|',
-            'pilih_referensi' => 'required',
-            'nama_pegawai_wikrama' => 'nullable',
-            'nama_siswa' => 'nullable',
-            'rayon' => 'nullable',
-            'nama_alumni' => 'nullable',
-            'tahun_lulus_alumni' => 'nullable',
-            'nama_guru_smp' => 'nullable',
-            'nama_smp' => 'nullable',
-            'referensi_no_seleksi' => 'nullable',
-            'referensi_nama_siswa' => 'nullable',
-            'referensi_sosmed' => 'nullable',
-            'referensi_langsung' => 'nullable',
+            'no_hp_ayah' => 'required',
+            'no_hp_ibu' => 'required',
         ]);
 
-        // Ppdb::create($request->all());
-
-        $ppdb = Ppdb::create([
-            'nisn' => $request->nisn,
-            'jk' => $request->jk,
-            'nama' => $request->nama,
-            'asal_sekolah' => $request->asal_sekolah,
-            'asal_sekolah_text' => $request->asal_sekolah_text,
-            'email' => $request->email,
-            'no_hp' => $request->no_hp,
-            'no_hp_ayah' => $request->no_hp_ayah,
-            'no_hp_ibu' => $request->no_hp_ibu,
-            'pilih_referensi' => $request->pilih_referensi,
-            'nama_pegawai_wikrama' => $request->nama_pegawai_wikrama,
-            'nama_siswa' => $request->nama_siswa,
-            'rayon' => $request->rayon,
-            'nama_alumni' => $request->nama_alumni,
-            'tahun_lulus_alumni' => $request->tahun_lulus_alumni,
-            'nama_guru_smp' => $request->nama_guru_smp,
-            'nama_smp' => $request->nama_smp,
-            'referensi_no_seleksi' => $request->referensi_no_seleksi,
-            'referensi_nama_siswa' => $request->referensi_nama_siswa,
-            'referensi_sosmed' => $request->referensi_sosmed,
-            'referensi_langsung' => $request->referensi_langsung,
-        ]);
+        Ppdb::create($request->all());
 
         User::create([
             'nama' => $request->nama,
@@ -255,10 +189,15 @@ class PpdbController extends Controller
             'password' => Hash::make($request->nisn),
         ]);
 
-        $id = $ppdb['id'];
-
-        return redirect()->route('print', $id)->with('success', 'Data pendaftaran siswa berhasil dibuat!');
+        return redirect()->route('print')->with('success', 'Data pendaftaran siswa berhasil dibuat!');
      }
+
+     public function print()
+    {
+        $item = Ppdb::latest()->first();
+
+        return view('ppdb.print' , compact('item'));
+    }
 
     /**
      * Display the specified resource.
@@ -280,8 +219,8 @@ class PpdbController extends Controller
      */
     public function edit(ppdb $ppdb)
     {
-        //
-        
+        $item = Pembayaran::where('user_id', '=', Auth::user()->id)->first();
+        return view('ppdb.pembayaran', compact('item'));
     }
 
     /**
@@ -291,9 +230,72 @@ class PpdbController extends Controller
      * @param  \App\Models\ppdb  $ppdb
      * @return \Illuminate\Http\Response
      */
+
+     public function uploadPembayaran (Request $request)
+     {
+         $request->validate([
+             'nama_bank' => 'required',
+             'nama_pemilik' => 'required',
+             'nominal' => 'required',
+             'foto_pembayaran' => 'required|image|mimes:jpg,png,jpeg,gif,svg',
+             'nama_bank_text' => 'nullable',
+         ]);
+ 
+         $image = $request->file('foto_pembayaran');
+          $imgName = time().rand().'.'.$image->extension();
+          if(!file_exists(public_path('/assets/img/'.$image->getClientOriginalName()))){
+              $destinationPath = public_path('/assets/img/');
+              $image->move($destinationPath, $imgName);
+              $uploaded = $imgName;
+          }else{
+              $uploaded = $image->getClientOriginalName();
+          }
+ 
+         pembayaran::create([
+             'nama_bank' => $request->nama_bank,
+             'nama_pemilik' => $request->nama_pemilik,
+             'nominal' => $request->nominal,
+             'nama_bank_text' => $request->nama_bank_text,
+             'foto_pembayaran' => $uploaded,
+             'status' => 0,
+             'user_id' => Auth::user()->id,
+         ]);
+ 
+         return redirect()->route('dashboard')->with('successUploadBayar', 'Pembayaran telah dilakukan silahkan menunggu admin untuk melakukan validasi');
+     }
+
     public function update(Request $request, ppdb $ppdb)
     {
-        //
+        $request->validate([
+            'nama_bank' => 'required',
+            'nama_pemilik' => 'required',
+            'nominal' => 'required',
+            'foto_pembayaran' => 'required|image|mimes:jpg,png,jpeg,gif,svg',
+            'nama_bank_text' => 'nullable',
+        ]);
+
+        $image = $request->file('foto_pembayaran');
+          $imgName = time().rand().'.'.$image->extension();
+          if(!file_exists(public_path('/assets/img/'.$image->getClientOriginalName()))){
+              $destinationPath = public_path('/assets/img/');
+              $image->move($destinationPath, $imgName);
+              $uploaded = $imgName;
+          }else{
+              $uploaded = $image->getClientOriginalName();
+          }
+
+          pembayaran::create([
+            'nama_bank' => $request->nama_bank,
+            'nama_pemilik' => $request->nama_pemilik,
+            'nominal' => $request->nominal,
+            'nama_bank_text' => $request->nama_bank_text,
+            'foto_pembayaran' => $uploaded,
+            'status' => 0,
+            'user_id' => Auth::user()->id,
+        ]);
+
+        return redirect()->route('dashboard')->with('successUploadBayar', 'Pembayaran telah dilakukan silahkan menunggu admin untuk melakukan validasi');
+        
     }
 
     /**
@@ -308,57 +310,31 @@ class PpdbController extends Controller
     }
 }
 
-//  public function store(Request $request)
-    //  {
-    //      $request->validate([
-    //         'password' => 'required|',
-    //         'jk' => 'required|',
-    //         'nama' => 'required|',
-    //         'asal_sekolah' => 'required|',
-    //         'asal_sekolah_text' => 'required|',
-    //         'email' => 'required|',
-    //         'no_hp' => 'required|',
-    //         'no_hp_ayah' => 'required|',
-    //         'no_hp_ibu' => 'required|',
-    //         'pilih_referensi' => 'required|',
-    //         'nama_pegawai_wikrama' => 'required|',
-    //         'nama_siswa' => 'required|',
-    //         'rayon' => 'required|',
-    //         'nama_alumni' => 'required|',
-    //         'tahun_lulus_alumni' => 'required|',
-    //         'nama_guru_smp' => 'required|',
-    //         'nama_smp' => 'required|',
-    //         'referensi_no_seleksi' => 'required|',
-    //         'referensi_nama_siswa' => 'required|',
-    //         'referensi_sosmed' => 'required|',
-    //         'referensi_langsung' => 'required|',
-    //     ]);
+       // $ppdb = Ppdb::with(['id'])->get();
 
-    //     Ppdb::create([
-    //         'password' => $request->password,
-    //         'jk' => $request->jk,
-    //         'nama' => $request->nama,
-    //         'asal_sekolah' => $request->asal_sekolah,
-    //         'asal_sekolah_text' => $request->asal_sekolah_text,
-    //         'email' => $request->email,
-    //         'no_hp' => $request->no_hp,
-    //         'no_hp_ayah' => $request->no_hp_ayah,
-    //         'no_hp_ibu' => $request->no_hp_ibu,
-    //         'pilih_referensi' => $request->pilih_referensi,
-    //         'nama_pegawai_wikrama' => $request->nama_pegawai_wikrama,
-    //         'nama_siswa' => $request->nama_siswa,
-    //         'rayon' => $request->rayon,
-    //         'nama_alumni' => $request->nama_alumni,
-    //         'tahun_lulus_alumni' => $request->tahun_lulus_alumni,
-    //         'nama_guru_smp' => $request->nama_guru_smp,
-    //         'nama_smp' => $request->nama_smp,
-    //         'referensi_no_seleksi' => $request->referensi_no_seleksi,
-    //         'referensi_nama_siswa' => $request->referensi_nama_siswa,
-    //         'referensi_sosmed' => $request->referensi_sosmed,
-    //         'referensi_langsung' => $request->referensi_langsung,
-    //     ]);
+        // // Count
+        // $count_user = Ppdb::all()->count();
+        // $count_all_peserta = Ppdb::all()->count();
+        // $count_menunggu_peserta = Ppdb::where('status', 'MENUNGGU')->count();
+        // $count_ditolak_peserta = Ppdb::where('status', 'DITOLAK')->count();
+        // $count_diterima_peserta = Ppdb::where('status', 'DITERIMA')->count();
+        
 
-    //     Ppdb::create($request->all());
+        // return view('pages.dashboard.index', compact(
+        //     'items', 'count_user', 'count_all_peserta', 'count_menunggu_peserta',
+        //     'count_ditolak_peserta', 'count_diterima_peserta'
+        // ));
 
-    //     return redirect()->route('index')->with('success', 'Data pendaftaran siswa berhasil dibuat!');
-    //  }
+        // $users=User::where('id', Auth::user()->id)->first();
+
+                // $data = Ppdb::create([
+        //     'nisn' => $request->nisn,
+        //     'jk' => $request->jk,
+        //     'nama' => $request->nama,
+        //     'asal_sekolah' => $request->asal_sekolah,
+        //     'asal_sekolah_text' => $request->asal_sekolah_text,
+        //     'email' => $request->email,
+        //     'no_hp' => $request->no_hp,
+        //     'no_hp_ayah' => $request->no_hp_ayah,
+        //     'no_hp_ibu' => $request->no_hp_ibu,
+        // ]);

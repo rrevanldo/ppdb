@@ -25,6 +25,10 @@ class User extends Authenticatable
         'image_profile',
     ];
 
+    public function pembayaran(){
+        return $this->hasMany(Pembayaran::class);
+    }
+
     /**
      * The attributes that should be hidden for serialization.
      *

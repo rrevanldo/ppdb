@@ -15,11 +15,13 @@ return new class extends Migration
     {
         Schema::create('pembayarans', function (Blueprint $table) {
             $table->id();
+            $table->bigInteger('user_id');
             $table->string('nama_bank');
             $table->string('nama_pemilik');
             $table->string('nominal');
             $table->string('nama_bank_text')->nullable();
-            $table->string('foto_pembayaran')->nullable();
+            $table->string('foto_pembayaran');
+            $table->boolean('status');
             $table->timestamps();
         });
     }
