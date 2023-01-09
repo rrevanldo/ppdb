@@ -18,19 +18,25 @@ use App\Http\Controllers\PpdbController;
 //     return view('welcome');
 // });
 
+
 //halaman awal
 Route::get('/', [PpdbController::class, 'index'])->name('index');
 
-//login
-Route::get('/login', [PpdbController::class, 'login'])->name('login');
-Route::post('/login', [PpdbController::class, 'auth'])->name('login.auth');
+Route::middleware('isGuest')->group(function () {
+    // //halaman awal
+    // Route::get('/', [PpdbController::class, 'index'])->name('index');
 
-// register
-Route::get('/register', [PpdbController::class, 'register'])->name('register');
-Route::post('/store', [PpdbController::class, 'store'])->name('store');
+    //login
+    Route::get('/login', [PpdbController::class, 'login'])->name('login');
+    Route::post('/login', [PpdbController::class, 'auth'])->name('login.auth');
 
-// print pdf
-Route::get('/print', [PpdbController::class, 'print'])->name('print');
+    // register
+    Route::get('/register', [PpdbController::class, 'register'])->name('register');
+    Route::post('/store', [PpdbController::class, 'store'])->name('store');
+
+    // print pdf
+    Route::get('/print', [PpdbController::class, 'print'])->name('print');
+});
 
 // logout
 Route::get('/logout', [PpdbController::class, 'logout'])->name('logout');
@@ -54,7 +60,7 @@ Route::middleware('isLogin', 'CekRole:user')->prefix('/dashboard')->name('dashbo
     Route::patch('pembayaran/pembayaran/update', [PembayaranController::class, 'update'])->name('pembayaran.update');
 });
 
-// halaman setelah login user dan admin
+// halaman setelah login admin dan user
 Route::middleware(['isLogin', 'CekRole:admin,user'])->group(function() {
     Route::get('/error', [PpdbController::class, 'error'])->name('error');
     Route::get('/dashboard', [PpdbController::class, 'dashboard'])->name('dashboard');
@@ -63,3 +69,17 @@ Route::middleware(['isLogin', 'CekRole:admin,user'])->group(function() {
     Route::patch('/dashboard/profile/change', [PpdbController::class, 'changeProfile'])->name('dashboard.profile.change');
     Route::get('/dashboard/pembayaran', [PpdbController::class, 'pembayaran'])->name('dashboard.pembayaran');
 });
+
+// //halaman awal
+// Route::get('/', [PpdbController::class, 'index'])->name('index');
+
+// //login
+// Route::get('/login', [PpdbController::class, 'login'])->name('login');
+// Route::post('/login', [PpdbController::class, 'auth'])->name('login.auth');
+
+// // register
+// Route::get('/register', [PpdbController::class, 'register'])->name('register');
+// Route::post('/store', [PpdbController::class, 'store'])->name('store');
+
+// // print pdf
+// Route::get('/print', [PpdbController::class, 'print'])->name('print');
